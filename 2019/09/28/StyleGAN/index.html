@@ -201,11 +201,11 @@
 <h3 id="3-StyleGAN-实例测试"><a href="#3-StyleGAN-实例测试" class="headerlink" title="3.  StyleGAN 实例测试"></a>3.  StyleGAN 实例测试</h3><p>####3.1随机人像生成<br>该网络可对人像进行随机生成，在实际功能验证中随机生成了500个人脸。在生成的全过程，我们只需要对该网络提供随机数即可。具体生成情况见下图<img src alt=":"><br>生成500个人脸花费时间没有具体度量，大概在几分钟左右（GPU 1060 6G，&lt;5mins）。图像数据结果较佳，在对图像进行细看时，发现偶有图像成像效果一般，例如严重的兔唇，或者脸部空洞。生成的图像尺寸皆为1024*1024。<br>后期再生成：StyleGAN网络的人脸生成完全依赖于外部随机向量的输入，也就是说只要输入同样的随机向量于StyleGAN网络中，生成的人脸图像完全一致。计算机随机数的生成依赖随机种子(Seed)的选取，选择同样的随机种子便代表同一人脸的再次生成。</p>
 <p>####3.2人脸A与B的融合<br>下面展示两张同学的照片，从采集得到的原图到融合的全部过程：</p>
 <ul>
-<li>原图：可见两张图像的尺寸并不一样，首先便需要将两张图像的人脸部分检测出来，之后对图像进行剪裁为StyleGAN适用的1024*1024的尺寸<img src alt="raw1"> <img src alt="raw2"></li>
-<li>人脸剪裁：使用基于python的Dlib库对人脸进行检测，该库可以检测人脸68或者更多的特征点。Dlib完全开源，并提供训练好的模型予以使用。一般来说Dlib对人脸的检测效果要优于OpenCV。人脸检测剪裁后的尺寸为（1024*1024）<img src alt="raw_c1"> <img src alt="raw_c2"></li>
-<li>StyleGAN网络图像生成：StyleGAN只能依赖随机向量生成人脸图像，所以此生成过程不可控。依靠StyleGAN无法生成我们想让网络进行融合演进的图像，原因是我们无法给网络提供上述图像对应的且被StyleGAN识别的特征向量。解决方案为对StyleGAN添加RensNet对我们的图像进行编码，具体过程见理论部分。生成结果见下图：<img src alt="raw_s1"> <img src alt="raw_s2"></li>
+<li>原图：可见两张图像的尺寸并不一样，首先便需要将两张图像的人脸部分检测出来，之后对图像进行剪裁为StyleGAN适用的1024*1024的尺寸<img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wr.jpg" alt="raw1"> <img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wx_02.jpg" alt="raw2"></li>
+<li>人脸剪裁：使用基于python的Dlib库对人脸进行检测，该库可以检测人脸68或者更多的特征点。Dlib完全开源，并提供训练好的模型予以使用。一般来说Dlib对人脸的检测效果要优于OpenCV。人脸检测剪裁后的尺寸为（1024*1024）<img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wr_01c.png" alt="raw_c1"> <img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wx_02c.png" alt="raw_c2"></li>
+<li>StyleGAN网络图像生成：StyleGAN只能依赖随机向量生成人脸图像，所以此生成过程不可控。依靠StyleGAN无法生成我们想让网络进行融合演进的图像，原因是我们无法给网络提供上述图像对应的且被StyleGAN识别的特征向量。解决方案为对StyleGAN添加RensNet对我们的图像进行编码，具体过程见理论部分。生成结果见下图：<img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wr_01.png" alt="raw_s1"> <img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wx_02.png" alt="raw_s2"></li>
 <li>需要注意的是，上图虽然和我们提供的照片比较相似，但是他完全由StyleGAN网络生成，我们只给他提供了一个ResNet网络输出的多维向量。网络依照特征向量（encode）生成图像，生成的人物与原图人物接近。仔细分辨发现多余的头发丝会被处理，皮肤会更为平滑美白，衣物基本不变，背景会被模糊。</li>
-<li>将上述二人进行图像融合（上方的人脸称为A，左下方的人脸称为B，融合人脸称为C）：可见，融合的结果基本采用A人脸的年龄、性别、姿态、发型、衣物形状，采用B人物的肤色、发色、衣物颜色、眼睛形状、背景样式等信息。<img src alt="raw_m1"> <img src alt="raw2_m"><br>####3.3人脸的年龄与性别的变化<br>提取人物年龄和性别的变化特征矩阵，使用上述矩阵的影响可对人物的年龄、性别、笑容等多维度进行自定义变换。<br>具体细节可以参考<a href="https://github.com/eyaler/stylegan-encoder" target="_blank" rel="noopener">Encoder代码</a></li>
+<li>将上述二人进行图像融合（上方的人脸称为A，左下方的人脸称为B，融合人脸称为C）：可见，融合的结果基本采用A人脸的年龄、性别、姿态、发型、衣物形状，采用B人物的肤色、发色、衣物颜色、眼睛形状、背景样式等信息。<img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wx02-wr01-mixing.png" alt="raw_m1"> <img src="https://github.com/Fenkail/fenkail.github.io/blob/master/img/wr01-wx02-mixing.png" alt="raw2_m"><br>####3.3人脸的年龄与性别的变化<br>提取人物年龄和性别的变化特征矩阵，使用上述矩阵的影响可对人物的年龄、性别、笑容等多维度进行自定义变换。<br>具体细节可以参考<a href="https://github.com/eyaler/stylegan-encoder" target="_blank" rel="noopener">Encoder代码</a></li>
 </ul>
 <p>###参考文献</p>
 <ul>
