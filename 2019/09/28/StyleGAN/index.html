@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives: 2019/9 | Feng kai</title>
+  <title>StyleGAN | Feng kai</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -70,7 +70,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -176,87 +176,112 @@
         <!-- ============================ Header & Logo bar =========================== -->
 
 
-      <!-- ============================ Hero Image =========================== -->
-
-<section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/bg_img.jpg) no-repeat center center fixed;background-size: cover">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
-                <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
-                    <div>
-                        
-                        <h2>YOU'VE MADE A <span>BRAVE</span> DECISION, WELCOME.</h2>
-                        <p></p>
-                        
-                        <h2></h2>
-                        <p>每一个不曾起舞的日子都是对生命的辜负。</p>
-                        
-
-                    </div>
-                </div>
-            </div>
-            <!-- // .col-md-12 -->
-        </div>
-        <div class="herofade beige-dk"></div>
-    </div>
-</section>
-
-<!-- Height spacing helper -->
-<div class="heightblock"></div>
-<!-- // End height spacing helper -->
-
-<!-- ============================ END Hero Image =========================== -->
-
-
-
-
-<section id="services">
+      
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2019/09/28/StyleGAN/">StyleGAN</a></h4>
-                            
-                            <p><time datetime="2019-09-28T08:43:17.000Z"><a href="/2019/09/28/StyleGAN/">2019-09-28</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2019/09/26/first-blog/">First--Blog</a></h4>
-                            
-                            <p><time datetime="2019-09-26T07:10:19.000Z"><a href="/2019/09/26/first-blog/">2019-09-26</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2019/09/26/hello-world/">Hello World</a></h4>
-                            
-                            <p><time datetime="2019-09-26T03:06:25.468Z"><a href="/2019/09/26/hello-world/">2019-09-26</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2019-09-28T08:43:17.000Z" itemprop="datePublished">
+          2019-09-28
+      </time>
+    
+</span>
+                <h1>StyleGAN</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<ul>
+<li>源代码： <a href="https://github.com/NVlabs/stylegan" target="_blank" rel="noopener">https://github.com/NVlabs/stylegan</a></li>
+<li>Encoder参考：<a href="https://github.com/eyaler/stylegan-encoder" target="_blank" rel="noopener">https://github.com/eyaler/stylegan-encoder</a></li>
+</ul>
+<h3 id="1-StyleGAN网络"><a href="#1-StyleGAN网络" class="headerlink" title="1.  StyleGAN网络"></a>1.  StyleGAN网络</h3><p>####1.1 基本介绍<br>该网络由NVIDIA提出于2018.11，同时发表了文章<a href="https://arxiv.org/abs/1812.04948" target="_blank" rel="noopener">A Style-Based Generator Architecture for Generative Adversarial Networks</a>，主要改进了ProGAN的生成器部分.映射网络的目标是将输入向量编码为中间，不同元素控制视觉特征。映射网络由8个全连接层组成，它的输出 ⱳ(512*18),输入为(512×1).</p>
+<p>####1.2 特征组成<br> ⱳ(512*18)分别代表着18个维度不同的人脸特征，1<del>4一般代表人脸的姿态、发型、面部形状等；5</del>8一般代表更为细致的特征；9~10主要是颜色部分；具体不一部分影响的细节可以参考NVIDIA给出的<a href="http://stylegan.xyz/video" target="_blank" rel="noopener">视频介绍</a></p>
+<h3 id="2-StyleGAN-Encoder"><a href="#2-StyleGAN-Encoder" class="headerlink" title="2.  StyleGAN-Encoder"></a>2.  StyleGAN-Encoder</h3><p>####2.1 使用Encoder的原因<br>StyleGAN网络只能接受随机向量(Lantent z)进行人脸的生成，为了使StyleGAN可以使用我们现实中拍摄的图像，所以需要StyleGAN Encoder将图像编码为StyleGAN可以识别的编码。<br>Encoder部分本质上为Resnet网络，整体思路如下：利用generator这一特性给Resnet提供数据源，标签为之前输入Generator的随机向量。完成训练之后，该Resnet可以提取真实照片特征，也就是对真实数据映射到StyleGAN的编码器。但是，为了使得每次编码器都能输入StyleGAN后得到同一人像的输出，在实际生成是还需要添加几次的训练微调过程，在这里会花费相当多的时间。</p>
+<h3 id="3-StyleGAN-实例测试"><a href="#3-StyleGAN-实例测试" class="headerlink" title="3.  StyleGAN 实例测试"></a>3.  StyleGAN 实例测试</h3><p>####3.1随机人像生成<br>该网络可对人像进行随机生成，在实际功能验证中随机生成了500个人脸。在生成的全过程，我们只需要对该网络提供随机数即可。具体生成情况见下图<img src alt=":"><br>生成500个人脸花费时间没有具体度量，大概在几分钟左右（GPU 1060 6G，&lt;5mins）。图像数据结果较佳，在对图像进行细看时，发现偶有图像成像效果一般，例如严重的兔唇，或者脸部空洞。生成的图像尺寸皆为1024*1024。<br>后期再生成：StyleGAN网络的人脸生成完全依赖于外部随机向量的输入，也就是说只要输入同样的随机向量于StyleGAN网络中，生成的人脸图像完全一致。计算机随机数的生成依赖随机种子(Seed)的选取，选择同样的随机种子便代表同一人脸的再次生成。</p>
+<p>####3.2人脸A与B的融合<br>下面展示两张同学的照片，从采集得到的原图到融合的全部过程：</p>
+<ul>
+<li>原图：可见两张图像的尺寸并不一样，首先便需要将两张图像的人脸部分检测出来，之后对图像进行剪裁为StyleGAN适用的1024*1024的尺寸<img src alt="raw1"> <img src alt="raw2"></li>
+<li>人脸剪裁：使用基于python的Dlib库对人脸进行检测，该库可以检测人脸68或者更多的特征点。Dlib完全开源，并提供训练好的模型予以使用。一般来说Dlib对人脸的检测效果要优于OpenCV。人脸检测剪裁后的尺寸为（1024*1024）<img src alt="raw_c1"> <img src alt="raw_c2"></li>
+<li>StyleGAN网络图像生成：StyleGAN只能依赖随机向量生成人脸图像，所以此生成过程不可控。依靠StyleGAN无法生成我们想让网络进行融合演进的图像，原因是我们无法给网络提供上述图像对应的且被StyleGAN识别的特征向量。解决方案为对StyleGAN添加RensNet对我们的图像进行编码，具体过程见理论部分。生成结果见下图：<img src alt="raw_s1"> <img src alt="raw_s2"></li>
+<li>需要注意的是，上图虽然和我们提供的照片比较相似，但是他完全由StyleGAN网络生成，我们只给他提供了一个ResNet网络输出的多维向量。网络依照特征向量（encode）生成图像，生成的人物与原图人物接近。仔细分辨发现多余的头发丝会被处理，皮肤会更为平滑美白，衣物基本不变，背景会被模糊。</li>
+<li>将上述二人进行图像融合（上方的人脸称为A，左下方的人脸称为B，融合人脸称为C）：可见，融合的结果基本采用A人脸的年龄、性别、姿态、发型、衣物形状，采用B人物的肤色、发色、衣物颜色、眼睛形状、背景样式等信息。<img src alt="raw_m1"> <img src alt="raw2_m"><br>####3.3人脸的年龄与性别的变化<br>提取人物年龄和性别的变化特征矩阵，使用上述矩阵的影响可对人物的年龄、性别、笑容等多维度进行自定义变换。<br>具体细节可以参考<a href="https://github.com/eyaler/stylegan-encoder" target="_blank" rel="noopener">Encoder代码</a></li>
+</ul>
+<p>###参考文献</p>
+<ul>
+<li>[1].    Springenberg, J.T., et al., Striving for Simplicity: The All Convolutional Net. 2014.</li>
+<li>[2].    Karras, T., et al., Progressive Growing of GANs for Improved Quality, Stability, and Variation. 2017.</li>
+<li>[3].    Goodfellow, I.J., Generative Adversarial Nets.</li>
+<li>[4].    Karras, T., S. Laine and T. Aila, A Style-Based Generator Architecture for Generative Adversarial Networks. 2018.</li>
+<li>[5]. <a href="http://www.gwylab.com/note-gans.html" target="_blank" rel="noopener">http://www.gwylab.com/note-gans.html</a></li>
+</ul>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p>虽然还没想好写点什么，但是总觉得这里放句话比较和谐。</p>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="m-pagination col-md-8 col-md-offset-2 col-sm-24" role="pagination">
+    
+    
+    <a class="pull-right" href="/2019/09/26/first-blog/">
+        First--Blog →
+    </a>
+    
+</nav>
+
+        <div class="col-md-8 col-md-offset-2 col-sm-24"><script type="text/javascript">
+  /**
+   * 搜狐畅言
+   */
+
+  /*
+  document.write('<div id="SOHUCS" sid="' + window.location.pathname.slice(1) + '" ></div>');
+
+  window.onload = function () {
+    (function () {
+      var appid = 'cytXXXX';
+      var conf = 'prod_xxxxxxxxxxxxxxxxx';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      var loadJs = function (d, a, id) {
+        var c = document.getElementsByTagName("head")[0] || document.head || document.documentElement;
+        var b = document.createElement("script");
+        b.setAttribute("type", "text/javascript");
+        b.setAttribute("charset", "UTF-8");
+        b.setAttribute("src", d);
+        if (id) {
+          b.setAttribute("id", id);
+        }
+        if (typeof a === "function") {
+          if (window.attachEvent) {
+            b.onreadystatechange = function () {
+              var e = b.readyState;
+              if (e === "loaded" || e === "complete") {
+                b.onreadystatechange = null;
+                a()
+              }
+            }
+          } else {
+            b.onload = a
+          }
+        }
+        c.appendChild(b)
+      };
+
+      loadJs("https://changyan.sohu.com/upload/changyan.js", function () {
+        window.changyan.api.config({
+          appid: appid,
+          conf: conf
+        })
+      });
+    })();
+  }
+  */
+
+</script>
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
